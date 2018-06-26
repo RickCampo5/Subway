@@ -22,6 +22,7 @@ var player1Points = 0;
 var player2Points = 0;
 var p2Aux = 0;
 var winner = "";
+//var exp = Math.pow(frames, 10);
 //class
 class Board {
   constructor(x=0,y=0,width=canvas.width, height=canvas.height){
@@ -38,19 +39,19 @@ class Board {
   draw(){
     ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
     ctx.fillStyle = "white";
-    ctx.font = '50px Serif';
+    ctx.font = '50px Game';
     timer = Math.floor(frames / 60)
     ctx.fillText(timer, this.width -100, 50 )
   }
   gameOverP1(){
     ctx.fillStyle = "white";
-    ctx.font = '30px Serif';
+    ctx.font = '20px Game';
     var text = "P1:" + player1Points + " points in " + timer + " seconds P2 press SpaceBar to continue"
     ctx.fillText(text, 200, 70 );
   }
   gameOverP2(){
     ctx.fillStyle = "white";
-    ctx.font = '30px Serif';
+    ctx.font = '20px Game';
     var text = "P1:" + player1Points + " points in " + timer + "seconds"
     var text2 = "P2:" + player2Points + " points in " + timer + "seconds"
     var gameOText = "Game Over";
