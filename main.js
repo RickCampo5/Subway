@@ -19,7 +19,7 @@ var player1Time = 0;
 var player2Time = 0;
 var p2Aux = 0;
 var winner = "";
-
+document.getElementById("reset-button").style.display = "none";
 //class
 class Board {
   constructor(x=0,y=0,width=canvas.width, height=canvas.height){
@@ -184,6 +184,8 @@ function update(){
 
 function start(){
   if(!interval) interval = setInterval(update, 100/60);
+  document.getElementById("start-button").style.display = "none";
+  document.getElementById("reset-button").style.display = "block"
 }
 //aux Functions
 function winP1 (){
