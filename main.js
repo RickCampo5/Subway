@@ -25,6 +25,7 @@ var p2Aux = 0;
 var winner = "";
 document.getElementById("reset-button").style.display = "none";
 var level2 = false;
+// var one = false;
 //class
 class Board {
   constructor(x=0,y=0,width=canvas.width, height=canvas.height){
@@ -46,21 +47,21 @@ class Board {
     if(level2) timer = Math.floor(frames / 60)
     ctx.fillText(timer, this.width -100, 50 )
   }
-  gameOverP1(){
+  gameOverP1(great){
     ctx.fillStyle = "white";
-    ctx.font = '20px Game';
-    var text = "P1: " + player1Time + " segundos"
+    ctx.font = '40px Game';
+    var text = great + " P1: " + player1Time + " segundos" 
     var text2 = "Presiona 's' para el siguiente nivel"
-    ctx.fillText(text, 150, 70 );
-    ctx.fillText(text2, 150, 100 );
+    ctx.fillText(text, 50, 70 );
+    ctx.fillText(text2, 50, 130 );
   }
-  gameOverP2(){
+  gameOverP2(great){
     ctx.fillStyle = "white";
-    ctx.font = '20px Game';
-    var text = "P2: " + player2Time + " segundos" 
+    ctx.font = '40px Game';
+    var text = great + " P2: " + player2Time + " segundos" 
     var text2 = "Presiona 's' para el siguiente nivel"
-    ctx.fillText(text, 150, 70 );
-    ctx.fillText(text2, 150, 100);
+    ctx.fillText(text, 50, 70 );
+    ctx.fillText(text2, 50, 130);
   }
 }
 class Characters {
@@ -100,32 +101,32 @@ class BoardLvl2 {
     if(level2) timer = Math.floor(frames / 60)
     ctx.fillText(timer, this.width -100, 50 )
   }
-  gameOverP1(){
+  gameOverP1(great){
     ctx.fillStyle = "white";
-    ctx.font = '20px Game';
-    var text = "P1: " + player1TimeLvl2 + " segundos"
+    ctx.font = '40px Game';
+    var text = great + " P1: " + player1TimeLvl2 + " segundos"
     var text2 = "P2 presiona 'r' para continuar"
     ctx.fillText(text, 150, 70 );
-    ctx.fillText(text2, 150, 100 );
+    ctx.fillText(text2, 150, 130 );
   }
   gameOverP2(){
     ctx.fillStyle = "white";
-    ctx.font = '20px Game';
+    ctx.font = '40px Game';
     var text = "P1: " + player1Time + " segundos" 
     var text2 = "P1: " + player1TimeLvl2 + " segundos"
     var text3 = "P2: " + player2Time + " segundos"
     var text4 = "P2: " + player2TimeLvl2 + " segundos"
     var gameOText = "Game Over";
-    ctx.fillText(gameOText, 200, 70);
-    ctx.fillText(text, 700, 70 );
-    ctx.fillText(text2, 700, 100)
-    ctx.fillText(text3, 700, 130 );
-    ctx.fillText(text4, 700, 160)
-    ctx.font = "30px Game"
+    ctx.fillText(gameOText, 200, 150);
+    ctx.fillText(text, 700, 100 );
+    ctx.fillText(text2, 700, 160)
+    ctx.fillText(text3, 700, 220 );
+    ctx.fillText(text4, 700, 280)
+    ctx.font = "70px Game"
     if(player1Time + player1TimeLvl2 < player2Time + player2TimeLvl2) winner = "Gana P1!";
     else if (player1Time + player1TimeLvl2 > player2Time + player2TimeLvl2) winner = "Gana P2!";
     else if (player1Time + player1TimeLvl2 == player2Time + player2TimeLvl2) winner = "Empate"
-    ctx.fillText(winner, 700, 200 )
+    ctx.fillText(winner, 150, 210 )
   }
 }
 
@@ -309,7 +310,8 @@ function winP1 (){
   clearInterval(interval);
   interval = undefined;
   player1Time = timer;
-  background.gameOverP1();
+  var great = "Felicidades!"
+  background.gameOverP1(great);
   }
 }
 function winP2(){
@@ -317,23 +319,34 @@ function winP2(){
     clearInterval(interval);
     interval = undefined;
     player2Time = timer;
-    background.gameOverP2();
+    var great = "Felicidades!"
+    background.gameOverP2(great);
   }
 }
 function p1GameOver (){
   if (timer == 30 && p2Aux == 0 && !level2){
+    bus.x-=5
+    door.x-=5
+    if (bus.x === -canvas.width){
     clearInterval(interval);
     interval = undefined;
     player1Time = timer;
-    background.gameOverP1();
+    var great = "No lo lograste!"
+    background.gameOverP1(great);
+    }
   }
 }
 function p2GameOver(){
   if (timer == 30 && p2Aux == 1 && !level2){
+    bus.x-=5;
+    door.x-=5;
+    if (bus.x === -canvas.width){
     clearInterval(interval);
     interval = undefined;
     player2Time = timer;
-    background.gameOverP2();
+    var great = "No lo lograste!"
+    background.gameOverP2(great);
+    }
   }
 }
 function winP1Lvl2 (){
@@ -341,7 +354,8 @@ function winP1Lvl2 (){
   clearInterval(interval);
   interval = undefined;
   player1TimeLvl2 = timer;
-  backgroundlvl2.gameOverP1();
+  var great = "Felicidades!"
+  backgroundlvl2.gameOverP1(great);
   }
 }
 function winP2Lvl2(){
@@ -349,19 +363,21 @@ function winP2Lvl2(){
     clearInterval(interval);
     interval = undefined;
     player2TimeLvl2 = timer;
-    backgroundlvl2.gameOverP2();
+    var great = "Felicidades!"
+    backgroundlvl2.gameOverP2(great);
   }
 }
 function p1GameOverLvl2 (){
-  if (timer == 10 && p2Aux == 0 && level2){
+  if (timer == 30 && p2Aux == 0 && level2){
     clearInterval(interval);
     interval = undefined;
     player1TimeLvl2 = timer;
-    backgroundlvl2.gameOverP1();
+    var great = "No lo lograste!"
+    backgroundlvl2.gameOverP1(great);
   }
 }
 function p2GameOverLvl2(){
-  if (timer == 10 && p2Aux == 1 && level2){
+  if (timer == 30 && p2Aux == 1 && level2){
     clearInterval(interval);
     interval = undefined;
     player2TimeLvl2 = timer;
@@ -397,6 +413,7 @@ function restartP2(){
   you.x = 1000;
   you.y = 318;
   bus.x = canvas.width;
+  door.x = 310;
   level2 = false;
   p2Aux = 1;
   timer = 0;
@@ -494,6 +511,10 @@ function drawPeopleLvl2L() {
   })
 }
 
+// function onePlayer(){
+//   one = true
+// }
+
 //listeners
 document.getElementById("start-button")
     .addEventListener("click",start);
@@ -501,13 +522,16 @@ document.getElementById("start-button")
 document.getElementById("reset-button")
     .addEventListener("click",reset);
 
+// document.getElementById("onePlayer")
+//     .addEventListener("click",onePlayer);
+
 addEventListener("keydown", function(e){
   switch(e.keyCode){
-    case 82:
+    case 82: //r
       if (interval || p2Aux == 1) return
       else restartP2();
       break;
-    case 83:
+    case 83: //s
       if (p2Aux == 0 && !interval && !level2){
         level2 = true;
         restartLvl2();
