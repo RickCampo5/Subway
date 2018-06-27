@@ -24,8 +24,9 @@ var player2TimeLvl2 = 0;
 var p2Aux = 0;
 var winner = "";
 document.getElementById("reset-button").style.display = "none";
+document.getElementById("resOnePlayer").style.display = "none";
 var level2 = false;
-// var one = false;
+var one = false;
 //class
 class Board {
   constructor(x=0,y=0,width=canvas.width, height=canvas.height){
@@ -100,6 +101,16 @@ class BoardLvl2 {
     if(bus.x == 0 && !level2) timer = Math.floor(frames / 60)
     if(level2) timer = Math.floor(frames / 60)
     ctx.fillText(timer, this.width -100, 50 )
+  }
+  gameOverOne(){
+    ctx.fillStyle = "white";
+    ctx.font = '40px Game';
+    var text = "Level 1: " + player1Time + " segundos" 
+    var text2 = "Level 2: " + player1TimeLvl2 + " segundos"
+    var gameOText = "Game Over";
+    ctx.fillText(gameOText, 50, 150);
+    ctx.fillText(text, 500, 100 );
+    ctx.fillText(text2, 500, 160)
   }
   gameOverP1(great){
     ctx.fillStyle = "white";
@@ -355,7 +366,8 @@ function winP1Lvl2 (){
   interval = undefined;
   player1TimeLvl2 = timer;
   var great = "Felicidades!"
-  backgroundlvl2.gameOverP1(great);
+  if (!one)backgroundlvl2.gameOverP1(great);
+  else backgroundlvl2.gameOverOne();
   }
 }
 function winP2Lvl2(){
@@ -427,11 +439,30 @@ function reset(){
   you.x = 1000;
   you.y = 318;
   bus.x = canvas.width;
+  door.x = 310;
   level2 = false;
   p2Aux = 0;
   timer = 0;
   player1Time = 0;
   player2Time = 0;
+  one = false;
+  start();
+}
+
+function resetOne(){
+  people = [];
+  people2 = [];
+  frames = 0;
+  you.x = 1000;
+  you.y = 318;
+  bus.x = canvas.width;
+  door.x = 310;
+  level2 = false;
+  p2Aux = 0;
+  timer = 0;
+  player1Time = 0;
+  player2Time = 0;
+  one = true;
   start();
 }
 
@@ -511,9 +542,12 @@ function drawPeopleLvl2L() {
   })
 }
 
-// function onePlayer(){
-//   one = true
-// }
+function onePlayer(){
+  one = true
+  document.getElementById("onePlayer").style.display = "none";
+  document.getElementById("resOnePlayer").style.display = "block"
+  start();
+}
 
 //listeners
 document.getElementById("start-button")
@@ -522,13 +556,16 @@ document.getElementById("start-button")
 document.getElementById("reset-button")
     .addEventListener("click",reset);
 
-// document.getElementById("onePlayer")
-//     .addEventListener("click",onePlayer);
+document.getElementById("onePlayer")
+    .addEventListener("click",onePlayer);
+
+document.getElementById("resOnePlayer")
+    .addEventListener("click",resetOne);
 
 addEventListener("keydown", function(e){
   switch(e.keyCode){
     case 82: //r
-      if (interval || p2Aux == 1) return
+      if (interval || p2Aux == 1 || one) return
       else restartP2();
       break;
     case 83: //s
