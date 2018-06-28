@@ -293,24 +293,6 @@ class You extends Characters{
   }
 }
 
-// class Player2 extends Characters{
-//   constructor(x,y,width,height,img){
-//     super(x,y,width,height,img);
-//     this.bubbles = [];
-//   }
-//   isTouching(item){
-//     return  (this.x < item.x + item.width) &&
-//             (this.x + this.width > item.x) &&
-//             (this.y < item.y + item.height) &&
-//             (this.y + this.height > item.y);
-//   }
-//   gravity(){
-//     if (this.y != 318){
-//       this.y += 1;
-//     }
-//   }
-// }
-
 class Dova extends Characters{
   constructor(x,y,width,height,img){
     super(x,y,width,height,img)
@@ -327,11 +309,11 @@ class Dova extends Characters{
 }
 
 class Bubble {
-  constructor(x = you.x, y = you.y-40){
+  constructor(){
     this.width = 100;
     this.height = 100;
-    this.x = x
-    this.y = y
+    this.x = you.x;
+    this.y = you.y - 40;
     this.image = new Image();
     this.image.src = images.bubble;
     this.image.onload = function(){
@@ -349,7 +331,6 @@ var backgroundlvl2 = new BoardLvl2();
 var background = new Board();
 var bus = new Bus(canvas.width, canvas.height-390, 700,390, images.bus);
 var you = !level2 ? new You(1000, 318, 60, 70, images.male) : new You(canvas.width/2-50, 318, 60, 70, images.male);
-//var player2 = !level2 ? new Player2(1000, 318, 60, 70, images.female) : new Player2(canvas.width/2-50, 318, 60, 70, images.female);
 var door = new Door();
 var doorR = new DoorR();
 var doorL = new DoorL();
