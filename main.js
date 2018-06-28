@@ -12,7 +12,8 @@ var images = {
   female: "./images/Female.png",
   bus: "./images/sub3.jpg",
   bg: "./images/subwayStation.png",
-  inside:"./images/insideSub2.png"
+  inside:"./images/insideSub2.png",
+  dova: "./images/Dova.png"
 }
 var people = [];
 var people2 = [];
@@ -27,6 +28,11 @@ document.getElementById("reset-button").style.display = "none";
 document.getElementById("resOnePlayer").style.display = "none";
 var level2 = false;
 var one = false;
+var music = new Audio("./Music/Visager_-_04_-_Factory_Time.mp3");
+var fus = new Audio("./Music/Fus_Ro.mp3");
+var skyrim = new Audio("./Music/Skyrim.mp3");
+var pushes = false;
+var turnInDova = false;
 //class
 class Board {
   constructor(x=0,y=0,width=canvas.width, height=canvas.height){
@@ -173,6 +179,9 @@ class Door {
       winP1();
       winP2();
     }
+    if(this.isTouching(dova)){
+      winP1();
+    }
     else return;
   }
 }
@@ -198,6 +207,9 @@ class DoorR {
       winP1Lvl2();
       winP2Lvl2();
     }
+    if(this.isTouching(dova)){
+      winP1Lvl2();
+    }
     else return;
   }
 }
@@ -220,6 +232,9 @@ class DoorL {
     if(this.isTouching(you)){
       winP1Lvl2();
       winP2Lvl2();
+    }
+    if (this.isTouching(dova)){
+      winP1Lvl2();
     }
     else return;
   }
@@ -255,7 +270,7 @@ class Peoplelvl2 extends Characters{
   }
   move(){
     if (this.direction == "left") this.x -=2;
-    else this.x += 1;
+    if(this.direction == "right") this.x += 2;
   }
 }
 
@@ -276,6 +291,21 @@ class You extends Characters{
   }
 }
 
+class Dova extends Characters{
+  constructor(x,y,width,height,img){
+    super(x,y,width,height,img)
+  }
+  isTouching(item){
+    return  (this.x < item.x + item.width) &&
+            (this.x + this.width > item.x) &&
+            (this.y < item.y + item.height) &&
+            (this.y + this.height > item.y);
+  }
+  fusRoDah(){
+    pushes = true;
+  }
+}
+
 //instances
 var backgroundlvl2 = new BoardLvl2();
 var background = new Board();
@@ -284,6 +314,7 @@ var you = !level2 ? new You(1000, 318, 60, 70, images.male) : new You(canvas.wid
 var door = new Door();
 var doorR = new DoorR();
 var doorL = new DoorL();
+var dova = new Dova(1000,300,100,100,images.dova);
 
 //main Functions
 function update(){
@@ -295,27 +326,52 @@ function update(){
   if (!level2)generatePeople();
   if (level2) generatePeopleLvl2R();
   if (level2) generatePeopleLvl2L();
-  drawPeopleLvl2L();
-  drawPeople();
+  if(level2) drawPeopleLvl2L();
+  if(level2) drawPeopleLvl2R();
+  if(!level2) drawPeople();
   if (!level2) bus.draw();
   if (!level2) bus.move();
   p1GameOver();
   p2GameOver();
   p2GameOverLvl2();
   p1GameOverLvl2();
-  you.draw();
-  you.gravity();
+  if(!turnInDova) you.draw();
+  if(!turnInDova) you.gravity();
   if (!level2) door.draw();
   if(level2) doorR.draw();
   if(level2) doorL.draw();
+  if(turnInDova) dova.draw();
 }
 
 function start(){
   if(!interval) interval = setInterval(update, 100/60);
   document.getElementById("start-button").style.display = "none";
   document.getElementById("reset-button").style.display = "block"
+  if(!turnInDova) music.play();
 }
 //aux Functions
+function dovakhiin(){
+  turnInDova = true;
+  people = [];
+  people2 = [];
+  frames = 0;
+  you.x = canvas.width;
+  you.y = 318;
+  dova.x = 1000;
+  dova.y = 300;
+  bus.x = canvas.width;
+  door.x = 310;
+  level2 = false;
+  p2Aux = 0;
+  timer = 0;
+  player1Time = 0;
+  player1TimeLvl2 = 0;
+  player2TimeLvl2 = 0;
+  player2Time = 0;
+  one = true;
+  pushes = false;
+  start();
+}
 function winP1 (){
   if(p2Aux == 0 && !level2){
   clearInterval(interval);
@@ -402,6 +458,9 @@ function restartLvl2(){
   frames = 0;
   if(level2) you.x = canvas.width/2-50;
   if(level2) you.y = 318;
+  if(level2) dova.x = canvas.width/2-50;
+  if(level2) dova.y = 300;
+  pushes = false;
   p2Aux = 0;
   timer = 0;
   start();
@@ -463,6 +522,9 @@ function resetOne(){
   player1Time = 0;
   player2Time = 0;
   one = true;
+  pushes = false;
+  turnInDova = false;
+  dova.x = canvas.width;
   start();
 }
 
@@ -490,8 +552,12 @@ function drawPeople () {
   people.forEach(function(e){
     e.draw();
     e.move();
+    if(pushes) e.x-=50;
     if(you.isTouching(e)){
       you.x +=2;
+    }
+    if(dova.isTouching(e)){
+      dova.x +=2;
     }
   })
 }
@@ -536,8 +602,25 @@ function drawPeopleLvl2L() {
   people2.forEach(function(e){
     e.draw();
     e.move();
+    if(pushes) e.x+=50;
     if(you.isTouching(e)){
-      you.x -=4;
+      you.x -=2;
+    }
+    if(dova.isTouching(e)){
+      dova.x -=2;
+    }
+  })
+}
+function drawPeopleLvl2R(){
+  people.forEach(function(e){
+    e.draw();
+    e.move();
+    if(pushes) e.x -=50;
+    if(you.isTouching(e)){
+      you.x +=2;
+    }
+    if(dova.isTouching(e)){
+      dova.x += 2;
     }
   })
 }
@@ -580,17 +663,26 @@ addEventListener("keydown", function(e){
       break;
     case 39:
       you.x+=30;
+      dova.x+=30;
       break;
     case 37:
       you.x-=30;
+      dova.x-=30;
       break;
     case 38:
     if(you.y<248) return;
     else you.y-=80;
       break;
-    case 38 && 37:
-      you.y-=50;
-      you.x -= 30;
+    case 80:
+      dovakhiin();
+      skyrim.play();
+      music.pause();
       break;
+    case 70:
+    if(turnInDova){
+      dova.fusRoDah();
+      fus.play();
+    }
+    break;
   }
 })
