@@ -12,7 +12,7 @@ var images = {
   female: "./images/Female.png",
   bus: "./images/sub3.jpg",
   bg: "./images/subwayStation.png",
-  inside:"./images/insideSub2.png",
+  inside:"./images/insideSub3.jpg",
   dova: "./images/Dova.png",
   bubble: "./images/pixil-frame-0.png"
 }
@@ -33,6 +33,14 @@ var one = false;
 var music = new Audio("./Music/Visager_-_04_-_Factory_Time.mp3");
 var fus = new Audio("./Music/Fus_Ro.mp3");
 var skyrim = new Audio("./Music/Skyrim.mp3");
+var turu = new Audio("./Music/tono.mp3")
+var llegando = new Audio("./Music/Metro_Train_Stops_01_Sound_Effect_Mp3_89.mp3");
+var jump = new Audio("./Music/Jump.wav")
+var win = new Audio("./Music/win.wav")
+var lose = new Audio("./Music/Lose.wav")
+var steps = new Audio("./Music/steps.wav")
+steps.volume = 1;
+var victory = new Audio("./Music/277441__xtrgamr__tones-of-victory.wav");
 var pushes = false;
 var turnInDova = false;
 //class
@@ -142,9 +150,18 @@ class BoardLvl2 {
     ctx.fillText(text3, 700, 220 );
     ctx.fillText(text4, 700, 280)
     ctx.font = "70px Game"
-    if(player1Time + player1TimeLvl2 < player2Time + player2TimeLvl2) winner = "Gana P1!";
-    else if (player1Time + player1TimeLvl2 > player2Time + player2TimeLvl2) winner = "Gana P2!";
-    else if (player1Time + player1TimeLvl2 == player2Time + player2TimeLvl2) winner = "Empate"
+    if(player1Time + player1TimeLvl2 < player2Time + player2TimeLvl2){
+      victory.play();
+       winner = "Gana P1!";
+    }
+    else if (player1Time + player1TimeLvl2 > player2Time + player2TimeLvl2){
+      victory.play();
+       winner = "Gana P2!";
+    }
+    else if (player1Time + player1TimeLvl2 == player2Time + player2TimeLvl2){
+      victory.play();
+      winner = "Empate"
+    }
     ctx.fillText(winner, 150, 210 )
   }
 }
@@ -156,7 +173,9 @@ class Bus extends Characters {
   }
   move(){  
   if(this.x > 0){
-    this.x -=5; 
+    this.x -=5;
+    llegando.play(); 
+    llegando.volume = 1;
     } else return;  
   }
 }
@@ -180,9 +199,13 @@ class Door {
     if(this.isTouching(you)){
       winP1();
       winP2();
+      llegando.pause();
+      win.play();
     }
     if(this.isTouching(dova)){
       winP1();
+      llegando.pause();
+      win.play();
     }
     else return;
   }
@@ -208,39 +231,49 @@ class DoorR {
     if(this.isTouching(you)){
       winP1Lvl2();
       winP2Lvl2();
+      turu.pause();
+      victory.play();
+      if(p2Aux)music.pause();
     }
     if(this.isTouching(dova)){
+      turu.pause();
       winP1Lvl2();
+      victory.play();
     }
     else return;
   }
 }
-class DoorL {
-  constructor(){
-    this.x = 0;
-    this.y = 180;
-    this.width = 200;
-    this.height = 200;
-  }
-  isTouching(item){
-    return  (this.x < item.x + item.width) &&
-            (this.x + this.width > item.x) &&
-            (this.y < item.y + item.height) &&
-            (this.y + this.height > item.y);
-  }
-  draw(){
-    ctx.fillStyle = "rgba(225,225,225,0.0)"
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-    if(this.isTouching(you)){
-      winP1Lvl2();
-      winP2Lvl2();
-    }
-    if (this.isTouching(dova)){
-      winP1Lvl2();
-    }
-    else return;
-  }
-}
+// class DoorL {
+//   constructor(){
+//     this.x = 0;
+//     this.y = 180;
+//     this.width = 200;
+//     this.height = 200;
+//   }
+//   isTouching(item){
+//     return  (this.x < item.x + item.width) &&
+//             (this.x + this.width > item.x) &&
+//             (this.y < item.y + item.height) &&
+//             (this.y + this.height > item.y);
+//   }
+//   draw(){
+//     ctx.fillStyle = "rgba(225,225,225,0.0)"
+//     ctx.fillRect(this.x, this.y, this.width, this.height);
+//     if(this.isTouching(you)){
+//       winP1Lvl2();
+//       winP2Lvl2();
+//       turu.pause();
+//       victory.play();
+//      if(p2Aux) music.pause();
+//     }
+//     if (this.isTouching(dova)){
+//       winP1Lvl2();
+//       turu.pause();
+//       victory.play();
+//     }
+//     else return;
+//   }
+// }
 
 class People extends Characters {
   constructor(x,y,width,height,img, direct){
@@ -334,7 +367,7 @@ var bus = new Bus(canvas.width, canvas.height-390, 700,390, images.bus);
 var you = !level2 ? new You(1000, 318, 60, 70, images.male) : new You(canvas.width/2-50, 318, 60, 70, images.male);
 var door = new Door();
 var doorR = new DoorR();
-var doorL = new DoorL();
+// var doorL = new DoorL();
 var dova = new Dova(1000,300,100,100,images.dova);
 
 //main Functions
@@ -345,10 +378,10 @@ function update(){
   if (level2) backgroundlvl2.draw();
   if (!level2) background.draw();
   if (!level2)generatePeople();
-  if (level2) generatePeopleLvl2R();
+  // if (level2) generatePeopleLvl2R();
   if (level2) generatePeopleLvl2L();
   if(level2) drawPeopleLvl2L();
-  if(level2) drawPeopleLvl2R();
+  // if(level2) drawPeopleLvl2R();
   if(!level2) drawPeople();
   if (!level2) bus.draw();
   if (!level2) bus.move();
@@ -360,7 +393,7 @@ function update(){
   if(!turnInDova) you.gravity();
   if (!level2) door.draw();
   if(level2) doorR.draw();
-  if(level2) doorL.draw();
+  // if(level2) doorL.draw();
   if(turnInDova) dova.draw();
 }
 
@@ -369,6 +402,7 @@ function start(){
   document.getElementById("start-button").style.display = "none";
   document.getElementById("reset-button").style.display = "block"
   if(!turnInDova) music.play();
+  music.volume = 0.2;
 }
 //aux Functions
 function dovakhiin(){
@@ -415,6 +449,9 @@ function p1GameOver (){
   if (timer == 30 && p2Aux == 0 && !level2){
     bus.x-=5
     door.x-=5
+    llegando.pause();
+    lose.play();
+    lose.volume = 1;
     generateBubble();
     if (bus.x === -canvas.width){
     clearInterval(interval);
@@ -429,6 +466,9 @@ function p2GameOver(){
   if (timer == 30 && p2Aux == 1 && !level2){
     bus.x-=5;
     door.x-=5;
+    llegando.pause();
+    lose.play();
+    lose.volume = 1;
     generateBubble();
     if (bus.x === -canvas.width){
     clearInterval(interval);
@@ -460,15 +500,19 @@ function winP2Lvl2(){
 }
 function p1GameOverLvl2 (){
   if (timer == 30 && p2Aux == 0 && level2){
+    lose.play();
+    lose.volume = 1;
     clearInterval(interval);
     interval = undefined;
     player1TimeLvl2 = timer;
     var great = "No lo lograste!"
-    backgroundlvl2.gameOverP1(great);
+    if(!one)backgroundlvl2.gameOverP1(great);
+    if(one) backgroundlvl2.gameOverOne(great);
   }
 }
 function p2GameOverLvl2(){
   if (timer == 30 && p2Aux == 1 && level2){
+    lose.volume = 1;
     clearInterval(interval);
     interval = undefined;
     player2TimeLvl2 = timer;
@@ -479,9 +523,9 @@ function restartLvl2(){
   people = [];
   people2 = [];
   frames = 0;
-  if(level2) you.x = canvas.width/2-50;
+  if(level2) you.x = 100;
   if(level2) you.y = 318;
-  if(level2 && turnInDova) dova.x = canvas.width/2-50;
+  if(level2 && turnInDova) dova.x = 100;
   if(level2 && turnInDova) dova.y = 300;
   pushes = false;
   p2Aux = 0;
@@ -493,7 +537,7 @@ function restartLvl2P2(){
   people = [];
   people2 = [];
   frames = 0;
-  if(level2) you.x = canvas.width/2-50;
+  if(level2) you.x = 100;
   if(level2) you.y = 318;
   p2Aux = 1;
   timer = 0;
@@ -569,14 +613,14 @@ function generatePeople(){
   var img = ""
   var charX = 350;
   if (bus.x == 0){
-    if (frames % 100 === 0){
+    if (frames % 50 === 0){
 
       var g = Math.floor(Math.random() * 2);
       if (g == 1) img = images.male;
       else img = images.female;
       var newX = Math.floor(Math.random()* 350);
 
-      if (people.length < 8){
+      if (people.length < 15){
         var person = new People (charX + newX, 318, 60,70, img, "right");
         people.push(person);
         console.log(people.length);
@@ -600,24 +644,24 @@ function drawPeople () {
   })
 }
 
-function generatePeopleLvl2R(){
-  var img = ""
-  var charX = 0;
-    if (frames % 50 === 0){
+// function generatePeopleLvl2R(){
+//   var img = ""
+//   var charX = 0;
+//     if (frames % 50 === 0){
 
-      var g = Math.floor(Math.random() * 2);
-      if (g == 1) img = images.male;
-      else img = images.female;
-      var newX = Math.floor(Math.random()* 100);
+//       var g = Math.floor(Math.random() * 2);
+//       if (g == 1) img = images.male;
+//       else img = images.female;
+//       var newX = Math.floor(Math.random()* 100);
 
-      if (people.length < 20){
-        var person = new People (charX + newX, 318, 60,70, img, "right");
-        people.push(person);
-        console.log(people.length);
+//       if (people.length < 20){
+//         var person = new People (charX + newX, 318, 60,70, img, "right");
+//         people.push(person);
+//         console.log(people.length);
       
-    }
-  }
-}
+//     }
+//   }
+// }
 function generatePeopleLvl2L(){
   var img = ""
   var charX = 1150;
@@ -628,7 +672,7 @@ function generatePeopleLvl2L(){
       else img = images.female;
       var newX = Math.floor(Math.random()* 100);
 
-      if (people.length < 20){
+      if (people.length < 50){
         var person = new People (charX - newX, 318, 60,70, img, "left");
         people2.push(person);
         console.log(people.length);
@@ -650,20 +694,20 @@ function drawPeopleLvl2L() {
     }
   })
 }
-function drawPeopleLvl2R(){
-  people.forEach(function(e){
-    e.draw();
-    e.move();
-    if(pushes) e.x -=50;
-    if(you.isTouching(e)){
-      you.x +=2;
-      generateBubble();
-    }
-    if(dova.isTouching(e)){
-      dova.x += 2;
-    }
-  })
-}
+// function drawPeopleLvl2R(){
+//   people.forEach(function(e){
+//     e.draw();
+//     e.move();
+//     if(pushes) e.x -=50;
+//     if(you.isTouching(e)){
+//       you.x +=2;
+//       generateBubble();
+//     }
+//     if(dova.isTouching(e)){
+//       dova.x += 2;
+//     }
+//   })
+// }
 
 function onePlayer(){
   one = true
@@ -697,6 +741,7 @@ addEventListener("keydown", function(e){
     case 83: //s
       if (p2Aux == 0 && !interval && !level2){
         level2 = true;
+        turu.play();
         restartLvl2();
       } 
       if (p2Aux == 1 && !interval && !level2) {
@@ -707,12 +752,15 @@ addEventListener("keydown", function(e){
     case 39:
       you.x+=30;
       dova.x+=30;
+      steps.play();
       break;
     case 37:
       you.x-=30;
       dova.x-=30;
+      steps.play();
       break;
     case 38:
+    if(!turnInDova) jump.play();
     if(you.y<248) return;
     else you.y-=80;
       break;
