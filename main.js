@@ -27,6 +27,7 @@ var p2Aux = 0;
 var winner = "";
 document.getElementById("reset-button").style.display = "none";
 document.getElementById("resOnePlayer").style.display = "none";
+document.getElementById("letterF").style.display = "none";
 var level2 = false;
 var one = false;
 var music = new Audio("./Music/Visager_-_04_-_Factory_Time.mp3");
@@ -527,6 +528,9 @@ function reset(){
   player1Time = 0;
   player2Time = 0;
   one = false;
+  turnInDova = false;
+  pushes = false;
+  document.getElementById("letterF").style.display = "none"
   start();
 }
 
@@ -665,8 +669,11 @@ function onePlayer(){
   one = true
   document.getElementById("onePlayer").style.display = "none";
   document.getElementById("resOnePlayer").style.display = "block"
+  document.getElementById("letterF").style.display = "none";
+  resetOne();
   start();
 }
+
 
 //listeners
 document.getElementById("start-button")
@@ -713,6 +720,7 @@ addEventListener("keydown", function(e){
       dovakhiin();
       skyrim.play();
       music.pause();
+      document.getElementById("letterF").style.display = "block"
       break;
     case 70:
     if(turnInDova){
