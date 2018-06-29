@@ -69,12 +69,21 @@ class Board {
     ctx.fillText(timer, this.width -100, 50 )
   }
   gameOverP1(great){
+    if(one && timer == 30){
+      ctx.fillStyle = "white";
+    ctx.font = '40px Game';
+    var text = great
+    var text2 = "Presiona 'S' para reiniciar" 
+    ctx.fillText(text, 50, 70)
+    ctx.fillText(text2, 150, 512 );
+    }else{
     ctx.fillStyle = "white";
     ctx.font = '40px Game';
     var text = great + " P1: " + player1Time + " segundos" 
     var text2 = "Presiona 's' para el siguiente nivel"
     ctx.fillText(text, 50, 70 );
-    ctx.fillText(text2, 50, 130 );
+    ctx.fillText(text2, 50, 512 );
+    }
   }
   gameOverP2(great){
     ctx.fillStyle = "white";
@@ -82,7 +91,7 @@ class Board {
     var text = great + " P2: " + player2Time + " segundos" 
     var text2 = "Presiona 's' para el siguiente nivel"
     ctx.fillText(text, 50, 70 );
-    ctx.fillText(text2, 50, 130);
+    ctx.fillText(text2, 50, 512);
   }
 }
 class Characters {
@@ -125,12 +134,14 @@ class BoardLvl2 {
   gameOverOne(){
     ctx.fillStyle = "white";
     ctx.font = '40px Game';
-    var text = "Level 1: " + player1Time + " segundos" 
-    var text2 = "Level 2: " + player1TimeLvl2 + " segundos"
+    var text = "Nivel 1: " + player1Time + " segundos" 
+    var text2 = "Nivel 2: " + player1TimeLvl2 + " segundos"
+    var text3 = "Presiona S para reiniciar"
     var gameOText = "Game Over";
-    ctx.fillText(gameOText, 50, 150);
+    ctx.fillText(gameOText, 100, 150);
     ctx.fillText(text, 500, 100 );
     ctx.fillText(text2, 500, 160)
+    ctx.fillText(text3, 150, 512);
   }
   gameOverP1(great){
     ctx.fillStyle = "white";
@@ -138,7 +149,7 @@ class BoardLvl2 {
     var text = great + " P1: " + player1TimeLvl2 + " segundos"
     var text2 = "P2 presiona 'r' para continuar"
     ctx.fillText(text, 150, 70 );
-    ctx.fillText(text2, 150, 130 );
+    ctx.fillText(text2, 150, 512 );
   }
   gameOverP2(){
     ctx.fillStyle = "white";
@@ -167,6 +178,9 @@ class BoardLvl2 {
       winner = "Empate"
     }
     ctx.fillText(winner, 150, 210 )
+    ctx.font = "40px Game"
+    var text5 = "Presiona S para reiniciar"
+    ctx.fillText(text5, 150, 512)
   }
 }
 
@@ -220,9 +234,9 @@ class Door {
 
 class DoorR {
   constructor(){
-    this.x = 930;
+    this.x = 880;
     this.y = 180;
-    this.width = 200;
+    this.width = 300;
     this.height = 200;
   }
   isTouching(item){
@@ -376,7 +390,7 @@ var you = !level2 ? new You(1000, 318, 60, 70, images.male) : new You(canvas.wid
 var door = new Door();
 var doorR = new DoorR();
 // var doorL = new DoorL();
-var dova = new Dova(1000,300,100,100,images.dova);
+var dova = new Dova(canvas.width,300,100,100,images.dova);
 
 //main Functions
 function update(){
@@ -402,14 +416,17 @@ function update(){
   if (!level2) door.draw();
   if(level2) doorR.draw();
   // if(level2) doorL.draw();
-  if(turnInDova) dova.draw();
+  if(turnInDova && !p2Aux) dova.draw();
 }
 
 function start(){
   if(!interval) interval = setInterval(update, 100/60);
   document.getElementById("start-button").style.display = "none";
   document.getElementById("reset-button").style.display = "block"
-  if(!turnInDova) music.play();
+  if(!turnInDova){
+    music.play();
+    music.loop = true;
+  } 
   music.volume = 0.2;
 }
 //aux Functions
@@ -750,6 +767,18 @@ addEventListener("keydown", function(e){
       else restartP2();
       break;
     case 83: //s
+    if(p2Aux == 0 && !interval && !level2 && one && timer == 30){
+      level2 = false;
+      resetOne();
+    }
+    if(p2Aux == 0 && !interval && level2 && one){
+      level2 = false;
+      resetOne();
+    }
+    if(p2Aux == 1 && !interval && level2 && !one){
+      level2 = false;
+      reset();
+    }
       if (p2Aux == 0 && !interval && !level2){
         level2 = true;
         turu.play();
@@ -761,23 +790,25 @@ addEventListener("keydown", function(e){
       }
       break;
     case 39: //derecha
-      you.x+=30;
+     if(!turnInDova) you.x+=30;
       if(interval) dova.image.src = images.dovaflip
       if(turnInDova)dova.x+=30;
       if(interval)you.image.src = images.male;
       steps.play();
       break;
     case 37: //izquierda
-      you.x-=30;
+     if(!turnInDova) you.x-=30;
       if(turnInDova)dova.x-=30;
      if(interval) you.image.src = images.maleflip;
      if(interval) dova.image.src = images.dova;
       steps.play();
       break;
     case 38:
+    if(interval){
     if(!turnInDova) jump.play();
     if(you.y<248) return;
     else you.y-=80;
+    }
       break;
     case 80:
       dovakhiin();
