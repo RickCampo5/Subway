@@ -630,7 +630,7 @@ function generatePeople(){
       else img = images.female;
       var newX = Math.floor(Math.random()* 350);
 
-      if (people.length < 15){
+      if (people.length < 10){
         var person = new People (charX + newX, 318, 60,70, img, "right");
         people.push(person);
         console.log(people.length);
@@ -675,7 +675,7 @@ function drawPeople () {
 function generatePeopleLvl2L(){
   var img = ""
   var charX = 1150;
-    if (frames % 50 === 0){
+    if (frames % 80 === 0){
 
       var g = Math.floor(Math.random() * 2);
       if (g == 1) img = images.maleflip;
