@@ -395,7 +395,7 @@ var dova = new Dova(canvas.width,300,100,100,images.dova);
 //main Functions
 function update(){
   frames++;
-  //console.log(frames);
+  // console.log(frames);
   ctx.clearRect(0,0,canvas.width, canvas.height);
   if (level2) backgroundlvl2.draw();
   if (!level2) background.draw();
